@@ -1,0 +1,10 @@
+---
+- hosts: localhost
+  remote_user: root
+  vars:
+    deploy_seafile_with_podman_seafile_user: seafile
+    deploy_seafile_with_podman_seafile_pass: 'YourSecretPWgoeshere'
+    deploy_seafile_with_podman_seafile_registry: docker.seadrive.org
+    deploy_seafile_with_podman_seafile_hostname: seafile.example.com
+  roles:
+    - ansible_role_deploy_seafile_with_rootless_podman

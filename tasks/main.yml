@@ -1,0 +1,109 @@
+---
+# tasks file for ansible_role_deploy_seafile_with_podman
+- name: Login into seafile registry
+  containers.podman.podman_login:
+    username: "{{ deploy_seafile_with_podman_seafile_user }}"
+    password: "{{ deploy_seafile_with_podman_seafile_pass }}"
+    registry: "{{ deploy_seafile_with_podman_seafile_registry }}"
+
+- name: Pull seafile image
+  containers.podman.podman_image:
+    name: "{{ deploy_seafile_with_podman_seafile_image }}"
+    username: "{{ deploy_seafile_with_podman_seafile_user }}"
+    password: "{{ deploy_seafile_with_podman_seafile_pass }}"
+
+- name: Volume for DB files
+  containers.podman.podman_volume:
+    state: present
+    name: "{{ deploy_seafile_with_podman_mariadb_volume }}"
+    recreate: no
+    debug: no
+
+- name: Volume for elasticsearch files
+  containers.podman.podman_volume:
+    state: present
+    name: "{{ deploy_seafile_with_podman_elastic_volume }}"
+    recreate: no
+    debug: no
+
+- name: Configure the podman-pod(1)
+  containers.podman.podman_pod:
+    debug: no
+    infra: yes
+    infra_conmon_pidfile: "{{ deploy_seafile_with_podman_pod_pid_file }}"
+    name: "{{ deploy_seafile_with_podman_pod_name }}"
+    publish: "{{ deploy_seafile_with_podman_pod_port }}"
+    state: started
+    recreate: yes
+
+- name: Configure MariaDB container
+  containers.podman.podman_container:
+    debug: no
+    conmon_pidfile: "{{ deploy_seafile_with_podman_mariadb_pid_file }}"
+    image: "{{ deploy_seafile_with_podman_mariadb_image }}"
+    image_strict: yes
+    pod: "{{ deploy_seafile_with_podman_pod_name }}"
+    recreate: yes
+    state: started
+    name: "{{ deploy_seafile_with_podman_mariadb_container_name }}"
+    env:
+      MYSQL_ROOT_PASSWORD: "{{ deploy_seafile_with_podman_mariadb_root_pw }}"
+      MYSQL_ROOT_HOST: "127.0.0.1"
+      MYSQL_LOG_CONSOLE: "{{ deploy_seafile_with_podman_mariadb_log_console }}"
+    volume: "{{ deploy_seafile_with_podman_mariadb_volume }}:/var/lib/mysql:Z"
+
+- name: Wait for DB to initilize
+  wait_for:
+    timeout: 30
+
+- name: Configure memcached container
+  containers.podman.podman_container:
+    debug: no
+    conmon_pidfile: "{{ deploy_seafile_with_podman_memcached_pid_file }}"
+    image: "{{ deploy_seafile_with_podman_memcached_image }}"
+    image_strict: yes
+    pod: "{{ deploy_seafile_with_podman_pod_name }}"
+    recreate: yes
+    state: started
+    name: "{{ deploy_seafile_with_podman_memcached_container_name }}"
+
+- name: Configure elasticsearch container in seafile pod
+  containers.podman.podman_container:
+    debug: no
+    conmon_pidfile: "{{ deploy_seafile_with_podman_elastic_pid_file }}"
+    image: "{{ deploy_seafile_with_podman_elastic_image }}"
+    image_strict: yes
+    pod: "{{ deploy_seafile_with_podman_pod_name }}"
+    recreate: yes
+    state: started
+    name: "{{ deploy_seafile_with_podman_elastic_container_name }}"
+    env:
+      discovery.type: "{{ deploy_seafile_with_podman_elastic_type }}"
+      bootstrap.memory_lock: >-
+        "{{ deploy_seafile_with_podman_elastic_memory_lock }}"
+      ES_JAVA_OPTS: "{{ deploy_seafile_with_podman_elastic_java_opts }}"
+    volume: "{{ deploy_seafile_with_podman_elastic_volume}}:/usr/share/
+        elasticsearch/data"
+
+- name: Configure seafile container in seafile pod
+  containers.podman.podman_container:
+    debug: no
+    conmon_pidfile: "{{ deploy_seafile_with_podman_seafile_pid_file }}"
+    image: "{{ deploy_seafile_with_podman_seafile_image }}"
+    image_strict: yes
+    pod: "{{ deploy_seafile_with_podman_pod_name }}"
+    recreate: yes
+    state: started
+    name: "{{ deploy_seafile_with_podman_seafile_container_name }}"
+    env:
+      DB_HOST: "{{ deploy_seafile_with_podman_seafile_db_host }}"
+      DB_ROOT_PASSWORD: "{{ deploy_seafile_with_podman_mariadb_root_pw }}"
+      TIME_ZONE: "{{ deploy_seafile_with_podman_seafile_time_zone }}"
+      SEAFILE_ADMIN_EMAIL: >
+        "{{ deploy_seafile_with_podman_seafile_admin_email }}"
+      SEAFILE_ADMIN_PASSWORD: >
+        "{{ deploy_seafile_with_podman_seafile_admin_pw }}"
+      SEAFILE_SERVER_LETSENCRYPT: >
+        "{{ deploy_seafile_with_podman_seafile_le_cert }}"
+      SEAFILE_SERVER_HOSTNAME: >
+        "{{ deploy_seafile_with_podman_seafile_hostname }}"

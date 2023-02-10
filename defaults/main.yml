@@ -1,0 +1,46 @@
+---
+# Credentials for docker.seadrive.org
+deploy_seafile_with_podman_seafile_user:
+deploy_seafile_with_podman_seafile_pass:
+deploy_seafile_with_podman_seafile_registry: docker.seadrive.org
+# defaults file for ansible_role_deploy_seafile_with_podman
+deploy_seafile_with_podman_mariadb_image: docker.io/library/mariadb:latest
+deploy_seafile_with_podman_memcached_image: docker.io/library/memcached
+deploy_seafile_with_podman_elastic_image: >-
+  docker.io/seafileltd/elasticsearch-with-ik:5.6.16
+deploy_seafile_with_podman_seafile_image: >-
+  docker.seadrive.org/seafileltd/seafile-pro-mc
+deploy_seafile_with_podman_pod_name: seafile
+deploy_seafile_with_podman_pod_pid_file: /tmp/seafile_pod_infra.pid
+deploy_seafile_with_podman_pod_port: 8002
+
+# volumes to store persistent data
+deploy_seafile_with_podman_mariadb_volume: seafile-db
+deploy_seafile_with_podman_elastic_volume: seafile-elastic
+
+# variables for mariadb container in seafile pod
+deploy_seafile_with_podman_mariadb_container_name: seafile-db
+deploy_seafile_with_podman_mariadb_root_pw: 'mysqlrootpw'
+deploy_seafile_with_podman_mariadb_log_console: true
+deploy_seafile_with_podman_mariadb_pid_file: /tmp/seafile_mariadb.pid
+
+# variables for memcached container in seafile pod
+deploy_seafile_with_podman_memcached_container_name: seafile-mamcached
+deploy_seafile_with_podman_memcached_pid_file: /tmp/seafile_memcached.pid
+
+# variables for elasticsearch container in seafile pod
+deploy_seafile_with_podman_elastic_container_name: seafile-elasticsearch
+deploy_seafile_with_podman_elastic_type: single-node
+deploy_seafile_with_podman_elastic_memory_lock: true
+deploy_seafile_with_podman_elastic_java_opts: -Xms1g -Xmx1g
+deploy_seafile_with_podman_elastic_pid_file: /tmp/seafile_elastic.pid
+
+# variables for the seafile container in seafile pod
+deploy_seafile_with_podman_seafile_container_name: seafile-seafile
+deploy_seafile_with_podman_seafile_db_host: 127.0.0.1
+deploy_seafile_with_podman_seafile_time_zone: 'Europe/Berlin'
+deploy_seafile_with_podman_seafile_admin_email:
+deploy_seafile_with_podman_seafile_admin_pw: 'ChangeThis11!'
+deploy_seafile_with_podman_seafile_le_cert: false
+deploy_seafile_with_podman_seafile_hostname: seafile.example.com
+deploy_seafile_with_podman_seafile_pid_file: /tmp/seafile_seafile.pid
