@@ -82,7 +82,7 @@
       bootstrap.memory_lock: >-
         "{{ deploy_seafile_with_podman_elastic_memory_lock }}"
       ES_JAVA_OPTS: "{{ deploy_seafile_with_podman_elastic_java_opts }}"
-    volume: "{{ deploy_seafile_with_podman_elastic_volume}}:/usr/share/
+    volume: "{{ deploy_seafile_with_podman_elastic_volume }}:/usr/share/
         elasticsearch/data"
 
 - name: Configure seafile container in seafile pod
@@ -97,13 +97,12 @@
     name: "{{ deploy_seafile_with_podman_seafile_container_name }}"
     env:
       DB_HOST: "{{ deploy_seafile_with_podman_seafile_db_host }}"
-      DB_ROOT_PASSWORD: "{{ deploy_seafile_with_podman_mariadb_root_pw }}"
+      DB_ROOT_PASSWD: "{{ deploy_seafile_with_podman_mariadb_root_pw }}"
       TIME_ZONE: "{{ deploy_seafile_with_podman_seafile_time_zone }}"
-      SEAFILE_ADMIN_EMAIL: >
+      SEAFILE_ADMIN_EMAIL: >-
         "{{ deploy_seafile_with_podman_seafile_admin_email }}"
-      SEAFILE_ADMIN_PASSWORD: >
-        "{{ deploy_seafile_with_podman_seafile_admin_pw }}"
-      SEAFILE_SERVER_LETSENCRYPT: >
-        "{{ deploy_seafile_with_podman_seafile_le_cert }}"
-      SEAFILE_SERVER_HOSTNAME: >
+      SEAFILE_ADMIN_PASSWORD: >-
+        "{{ deploy_seafile_with_podman_seafile_pass }}"
+      SEAFILE_SERVER_LETSENCRYPT: false
+      SEAFILE_SERVER_HOSTNAME: 
         "{{ deploy_seafile_with_podman_seafile_hostname }}"
