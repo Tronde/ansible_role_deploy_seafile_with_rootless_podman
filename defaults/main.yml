@@ -12,7 +12,7 @@ deploy_seafile_with_podman_seafile_image: >-
   docker.seadrive.org/seafileltd/seafile-pro-mc
 deploy_seafile_with_podman_pod_name: seafile
 deploy_seafile_with_podman_pod_pid_file: /tmp/seafile_pod_infra.pid
-deploy_seafile_with_podman_pod_port: 8003:80
+deploy_seafile_with_podman_pod_port: 80
 
 # volumes to store persistent data
 deploy_seafile_with_podman_mariadb_volume: seafile-db
