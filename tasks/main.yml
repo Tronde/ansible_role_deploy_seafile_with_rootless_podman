@@ -16,72 +16,72 @@
   containers.podman.podman_volume:
     state: present
     name: "{{ deploy_seafile_with_podman_mariadb_volume }}"
-    recreate: no
-    debug: no
+    recreate: false
+    debug: false
 
 - name: Volume for elasticsearch files
   containers.podman.podman_volume:
     state: present
     name: "{{ deploy_seafile_with_podman_elastic_volume }}"
-    recreate: no
-    debug: no
+    recreate: false
+    debug: false
 
 - name: Volume for seafile data files
   containers.podman.podman_volume:
     state: present
     name: "{{ deploy_seafile_with_podman_data_volume }}"
-    recreate: no
-    debug: no
+    recreate: false
+    debug: false
 
 - name: Configure the podman-pod(1)
   containers.podman.podman_pod:
-    debug: no
-    infra: yes
+    debug: false
+    infra: true
     infra_conmon_pidfile: "{{ deploy_seafile_with_podman_pod_pid_file }}"
     name: "{{ deploy_seafile_with_podman_pod_name }}"
     publish: "{{ deploy_seafile_with_podman_pod_port }}"
     state: started
-    recreate: yes
+    recreate: true
 
 - name: Configure MariaDB container
   containers.podman.podman_container:
-    debug: no
+    debug: false
     conmon_pidfile: "{{ deploy_seafile_with_podman_mariadb_pid_file }}"
     image: "{{ deploy_seafile_with_podman_mariadb_image }}"
-    image_strict: yes
+    image_strict: true
     pod: "{{ deploy_seafile_with_podman_pod_name }}"
-    recreate: yes
+    recreate: true
     state: started
     name: "{{ deploy_seafile_with_podman_mariadb_container_name }}"
     env:
       MYSQL_ROOT_PASSWORD: "{{ deploy_seafile_with_podman_mariadb_root_pw }}"
-#      MYSQL_ROOT_HOST: "127.0.0.1"
+      # MYSQL_ROOT_HOST: "127.0.0.1"
       MYSQL_LOG_CONSOLE: "{{ deploy_seafile_with_podman_mariadb_log_console }}"
     volume: "{{ deploy_seafile_with_podman_mariadb_volume }}:/var/lib/mysql:Z"
 
 - name: Wait for DB to initilize
-  wait_for:
+  ansible.builtin.wait_for:
     timeout: 30
 
 - name: Configure memcached container
   containers.podman.podman_container:
-    debug: no
+    debug: false
     conmon_pidfile: "{{ deploy_seafile_with_podman_memcached_pid_file }}"
     image: "{{ deploy_seafile_with_podman_memcached_image }}"
-    image_strict: yes
+    image_strict: true
     pod: "{{ deploy_seafile_with_podman_pod_name }}"
-    recreate: yes
+    recreate: true
     state: started
     name: "{{ deploy_seafile_with_podman_memcached_container_name }}"
 
 - name: Configure elasticsearch container in seafile pod
   containers.podman.podman_container:
-    debug: no
+    debug: false
     conmon_pidfile: "{{ deploy_seafile_with_podman_elastic_pid_file }}"
     image: "{{ deploy_seafile_with_podman_elastic_image }}"
-    image_strict: yes
+    image_strict: true
     pod: "{{ deploy_seafile_with_podman_pod_name }}"
-    recreate: yes
+    recreate: true
     state: started
     name: "{{ deploy_seafile_with_podman_elastic_container_name }}"
     env:
@@ -94,12 +94,12 @@
 
 - name: Configure seafile container in seafile pod
   containers.podman.podman_container:
-    debug: no
+    debug: false
     conmon_pidfile: "{{ deploy_seafile_with_podman_seafile_pid_file }}"
     image: "{{ deploy_seafile_with_podman_seafile_image }}"
-    image_strict: yes
+    image_strict: true
     pod: "{{ deploy_seafile_with_podman_pod_name }}"
-    recreate: yes
+    recreate: true
     state: started
     name: "{{ deploy_seafile_with_podman_seafile_container_name }}"
     env:
@@ -109,7 +109,7 @@
       SEAFILE_ADMIN_EMAIL:
         "{{ deploy_seafile_with_podman_seafile_admin_email }}"
       SEAFILE_ADMIN_PASSWORD:
-        "{{ deploy_seafile_with_podman_seafile_pass }}"
+        "{{ deploy_seafile_with_podman_seafile_admin_pw }}"
       SEAFILE_SERVER_LETSENCRYPT: false
       SEAFILE_SERVER_HOSTNAME:
         "{{ deploy_seafile_with_podman_seafile_hostname }}"
