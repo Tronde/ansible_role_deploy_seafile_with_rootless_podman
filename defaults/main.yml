@@ -4,7 +4,7 @@ deploy_seafile_with_podman_seafile_user:
 deploy_seafile_with_podman_seafile_pass:
 deploy_seafile_with_podman_seafile_registry: docker.seadrive.org
 # defaults file for ansible_role_deploy_seafile_with_podman
-deploy_seafile_with_podman_mariadb_image: docker.io/library/mariadb:latest
+deploy_seafile_with_podman_mariadb_image: docker.io/library/mariadb
 deploy_seafile_with_podman_memcached_image: docker.io/library/memcached
 deploy_seafile_with_podman_elastic_image: >-
   docker.io/seafileltd/elasticsearch-with-ik:5.6.16
@@ -17,6 +17,7 @@ deploy_seafile_with_podman_pod_port: 80
 # volumes to store persistent data
 deploy_seafile_with_podman_mariadb_volume: seafile-db
 deploy_seafile_with_podman_elastic_volume: seafile-elastic
+deploy_seafile_with_podman_data_volume: seafile-data
 
 # variables for mariadb container in seafile pod
 deploy_seafile_with_podman_mariadb_container_name: seafile-db

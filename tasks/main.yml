@@ -26,6 +26,13 @@
     recreate: no
     debug: no
 
+- name: Volume for seafile data files
+  containers.podman.podman_volume:
+    state: present
+    name: "{{ deploy_seafile_with_podman_data_volume }}"
+    recreate: no
+    debug: no
+
 - name: Configure the podman-pod(1)
   containers.podman.podman_pod:
     debug: no
@@ -48,7 +55,7 @@
     name: "{{ deploy_seafile_with_podman_mariadb_container_name }}"
     env:
       MYSQL_ROOT_PASSWORD: "{{ deploy_seafile_with_podman_mariadb_root_pw }}"
-      MYSQL_ROOT_HOST: "127.0.0.1"
+#      MYSQL_ROOT_HOST: "127.0.0.1"
       MYSQL_LOG_CONSOLE: "{{ deploy_seafile_with_podman_mariadb_log_console }}"
     volume: "{{ deploy_seafile_with_podman_mariadb_volume }}:/var/lib/mysql:Z"
 
@@ -79,11 +86,11 @@
     name: "{{ deploy_seafile_with_podman_elastic_container_name }}"
     env:
       discovery.type: "{{ deploy_seafile_with_podman_elastic_type }}"
-      bootstrap.memory_lock: >-
+      bootstrap.memory_lock:
         "{{ deploy_seafile_with_podman_elastic_memory_lock }}"
       ES_JAVA_OPTS: "{{ deploy_seafile_with_podman_elastic_java_opts }}"
     volume: "{{ deploy_seafile_with_podman_elastic_volume }}:/usr/share/
-        elasticsearch/data"
+        elasticsearch/data:Z"
 
 - name: Configure seafile container in seafile pod
   containers.podman.podman_container:
@@ -99,10 +106,11 @@
       DB_HOST: "{{ deploy_seafile_with_podman_seafile_db_host }}"
       DB_ROOT_PASSWD: "{{ deploy_seafile_with_podman_mariadb_root_pw }}"
       TIME_ZONE: "{{ deploy_seafile_with_podman_seafile_time_zone }}"
-      SEAFILE_ADMIN_EMAIL: >-
+      SEAFILE_ADMIN_EMAIL:
         "{{ deploy_seafile_with_podman_seafile_admin_email }}"
-      SEAFILE_ADMIN_PASSWORD: >-
+      SEAFILE_ADMIN_PASSWORD:
         "{{ deploy_seafile_with_podman_seafile_pass }}"
       SEAFILE_SERVER_LETSENCRYPT: false
-      SEAFILE_SERVER_HOSTNAME: 
+      SEAFILE_SERVER_HOSTNAME:
         "{{ deploy_seafile_with_podman_seafile_hostname }}"
+    volume: "{{ deploy_seafile_with_podman_data_volume }}:/shared:Z"
