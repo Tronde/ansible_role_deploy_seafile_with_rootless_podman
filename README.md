@@ -1,5 +1,7 @@
-Deploy Seafile with rootless Podman
-===================================
+[Archived] Deploy Seafile with rootless Podman
+==============================================
+
+**Note:** This repository has been archived and I do not plan to use this role again anytime soon.
 
 This role deploys Seafile Pro Edition with rootless podman.
 It's in an early stage and I cannot guarantee that it's production ready.
